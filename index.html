@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Flash Flipper — Cardputer ADV (Public)</title>
+  <script type="module" src="https://unpkg.com/esp-web-tools@10/dist/web/install-button.js"></script>
+  <style>
+    :root {
+      --bg: #f6f7f9;
+      --card: #ffffff;
+      --fg: #1a1c20;
+      --muted: #5b6270;
+      --border: #e3e6ea;
+      --accent: #ff7a00;
+      --accent-fg: #ffffff;
+      --code-bg: #f0f2f4;
+      --warn-bg: #fff7e6;
+      --warn-border: #ffd591;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #0f1115;
+        --card: #171a21;
+        --fg: #e8eaed;
+        --muted: #9aa2b1;
+        --border: #262b34;
+        --accent: #ff8c1a;
+        --accent-fg: #1a1c20;
+        --code-bg: #0b0d11;
+        --warn-bg: #2a2312;
+        --warn-border: #5c4a1a;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--fg);
+      font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      display: flex;
+      justify-content: center;
+      padding: 32px 16px;
+    }
+    .wrap { width: 100%; max-width: 640px; }
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      margin-bottom: 20px;
+    }
+    h1 { font-size: 1.6rem; margin: 0 0 4px; }
+    .sub { color: var(--muted); margin: 0 0 24px; font-size: 0.95rem; }
+    .flash-row { text-align: center; padding: 8px 0 4px; }
+    esp-web-install-button { --esp-tools-button-color: var(--accent); }
+    esp-web-install-button[install-supported] .unsupported { display: none; }
+    button.install {
+      background: var(--accent);
+      color: var(--accent-fg);
+      border: none;
+      border-radius: 10px;
+      padding: 14px 28px;
+      font-size: 1.05rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+    button.install:hover { filter: brightness(1.05); }
+    .unsupported {
+      display: none;
+      color: var(--muted);
+      font-size: 0.9rem;
+      margin-top: 8px;
+    }
+    .no-support esp-web-install-button { display: none; }
+    .no-support .unsupported { display: block; }
+    h2 { font-size: 1.05rem; margin: 24px 0 8px; }
+    ol, ul { margin: 0 0 8px; padding-left: 22px; }
+    li { margin: 6px 0; }
+    code {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 5px;
+      padding: 1px 6px;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.88em;
+    }
+    .warn {
+      background: var(--warn-bg);
+      border: 1px solid var(--warn-border);
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 0.92rem;
+      margin: 16px 0 0;
+    }
+    .footer { color: var(--muted); font-size: 0.82rem; text-align: center; }
+    a { color: var(--accent); }
+    .tree {
+      background: var(--code-bg);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 14px 16px;
+      overflow-x: auto;
+      font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+      font-size: 0.82rem;
+      line-height: 1.5;
+      margin: 8px 0 4px;
+      white-space: pre;
+    }
+    .tree .c { color: var(--muted); }
+    a.dl {
+      display: inline-block;
+      background: var(--accent);
+      color: var(--accent-fg);
+      text-decoration: none;
+      border-radius: 10px;
+      padding: 12px 22px;
+      font-weight: 600;
+      font-size: 1rem;
+      margin: 4px 0 12px;
+    }
+    a.dl:hover { filter: brightness(1.05); }
+    a.dl .sz { font-weight: 400; opacity: 0.85; font-size: 0.85em; }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+      <h1>Flipper — Cardputer ADV</h1>
+      <p class="sub">Public build · app image · ESP32-S3 · needs a microSD card</p>
+
+      <div class="flash-row">
+        <esp-web-install-button manifest="./manifest.json">
+          <button class="install" slot="activate">⚡ Connect &amp; Install</button>
+          <span slot="unsupported" class="unsupported">
+            Your browser can’t flash directly. Use <strong>Chrome</strong> or <strong>Edge</strong> on a desktop, or see the manual method below.
+          </span>
+          <span slot="not-allowed" class="unsupported">
+            Serial access was blocked. Reload the page over <strong>https://</strong> and allow the serial permission.
+          </span>
+        </esp-web-install-button>
+      </div>
+
+      <div class="warn">
+        <strong>Before you click:</strong> plug the Cardputer into your computer with a USB‑C <em>data</em> cable (not charge‑only). Choose <strong>Install</strong> when prompted — it does a clean flash of the whole chip.
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>Steps</h2>
+      <ol>
+        <li>Open this page in <strong>Chrome</strong> or <strong>Edge</strong> on a computer (phones and Safari/Firefox can’t flash).</li>
+        <li>Connect the Cardputer via USB‑C.</li>
+        <li>Click <strong>Connect &amp; Install</strong> and pick the device’s serial port.</li>
+        <li>Choose <strong>Install</strong>, confirm the erase, and wait for it to finish.</li>
+        <li>Press the <strong>RESET</strong> button (side, next to the USB‑C port) once when done — the firmware boots.</li>
+      </ol>
+
+      <div class="warn">
+        <strong>Insert a microSD card.</strong> Unlike the M5Stick build, the Cardputer stores its databases on a real microSD card — not internal flash. For SubGHz KeeLoq decoding, NFC dictionaries, and IR universal remotes to work, <strong>download the SD files</strong> (see <a href="#sdfiles">SD card files</a> below) and extract them to the <strong>root of a FAT32 microSD</strong>, then insert it. You end up with <code>/subghz</code>, <code>/nfc</code>, <code>/infrared</code>, and <code>/Manifest</code> on the card.
+      </div>
+
+      <h2>If no serial port appears</h2>
+      <p>The S3 sometimes needs to be put in download mode by hand:</p>
+      <ul>
+        <li>Hold <strong>G0</strong> (the button on top of the Cardputer), tap <strong>RESET</strong>, then release <strong>G0</strong>.</li>
+        <li>Click <strong>Connect &amp; Install</strong> again and select the port.</li>
+        <li>After flashing, press <strong>RESET</strong> once to boot.</li>
+      </ul>
+
+      <h2>Manual flashing (no browser support)</h2>
+      <p>With Python installed:</p>
+      <ul>
+        <li><code>pip install esptool</code></li>
+        <li><code>esptool --chip esp32s3 --port COMx --baud 921600 write_flash 0x0 Flipper-cardputer_adv-public-merged.bin</code></li>
+      </ul>
+      <p class="sub">Replace <code>COMx</code> with your port (macOS/Linux: <code>/dev/tty.usbmodem…</code> or <code>/dev/ttyACM0</code>). Flash mode/size/freq are already baked into the image. Don’t forget the microSD step above.</p>
+    </div>
+
+    <div class="card" id="sdfiles">
+      <h2>SD card files</h2>
+      <p>The Cardputer reads its databases from the microSD card. <strong>Download the pack below</strong> and extract the files to the <strong>root of a FAT32 microSD</strong>, so the card looks exactly like this:</p>
+      <a class="dl" href="./sd_content.zip" download>⬇ Download SD files <span class="sz">(sd_content.zip · ~212 KB)</span></a>
+      <div class="tree">(microSD root)/
+├─ Manifest                       <span class="c">resource index — without it the home screen shows “No Databases”</span>
+├─ subghz/assets/
+│   ├─ keeloq_mfcodes_user        <span class="c">142 KeeLoq mfg keys — gates/garages only, NO vehicle/car‑alarm codes</span>
+│   └─ dangerous_settings         <span class="c">SubGHz safety/region flags</span>
+├─ nfc/assets/
+│   ├─ mf_classic_dict.nfc        <span class="c">MIFARE Classic key dictionary</span>
+│   ├─ mf_ultralight_c_dict.nfc   <span class="c">MIFARE Ultralight‑C keys</span>
+│   ├─ aid.nfc                    <span class="c">EMV application IDs</span>
+│   ├─ bin.nfc                    <span class="c">bank card BIN lookup</span>
+│   ├─ country_code.nfc           <span class="c">ISO country codes</span>
+│   ├─ currency_code.nfc          <span class="c">ISO currency codes</span>
+│   ├─ vendors.nfc                <span class="c">NFC chip vendor list</span>
+│   └─ skylanders.nfc             <span class="c">Skylanders figure data</span>
+└─ infrared/assets/
+    ├─ tv.ir                      <span class="c">TV universal remote DB</span>
+    ├─ ac.ir                      <span class="c">air‑conditioner DB</span>
+    ├─ audio.ir                   <span class="c">audio / receiver DB</span>
+    ├─ fans.ir                    <span class="c">fan DB</span>
+    ├─ leds.ir                    <span class="c">LED‑controller DB</span>
+    └─ projectors.ir              <span class="c">projector DB</span></div>
+      <p class="sub">16 files, all public data — SubGHz KeeLoq (gate/garage) keys, NFC dictionaries, and IR universal‑remote databases. No card (or missing files) means SubGHz decoding, NFC lookups, and IR remotes won’t work. Re‑flashing the firmware does not touch the card.</p>
+    </div>
+
+    <p class="footer">Flipper Cardputer ADV · public build · 2026‑07‑27</p>
+  </div>
+
+  <script>
+    // Show the fallback message if the browser lacks Web Serial.
+    if (!('serial' in navigator)) {
+      document.body.classList.add('no-support');
+    }
+  </script>
+</body>
+</html>

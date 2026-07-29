@@ -1,0 +1,16 @@
+{
+  "name": "Flipper Cardputer ADV (Public)",
+  "version": "cardputer-2026-07-29b",
+  "new_install_prompt_erase": true,
+  "builds": [
+    {
+      "chipFamily": "ESP32-S3",
+      "parts": [
+        {
+          "path": "Flipper-cardputer_adv-public-merged.bin",
+          "offset": 0
+        }
+      ]
+    }
+  ]
+}

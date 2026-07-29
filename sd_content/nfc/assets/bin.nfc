@@ -1,0 +1,57 @@
+Filetype: Flipper EMV resources
+Version: 1
+# EMV BIN (leading card-number digits) : issuing bank name
+#
+# Looked up LONGEST prefix first, so a specific 8-digit entry beats a 4-digit one.
+# For a GUARANTEED match on your own card, read it, note the "Bank: ? (BIN xxxxxxxx)"
+# number, and add a line "xxxxxxxx: Your Bank" above the 4-digit section.
+#
+# The 4-digit UK ranges below are BEST-EFFORT — issuer ranges overlap and get
+# reassigned, so a card may occasionally show the wrong name. Edit freely.
+
+# --- Verified own cards (8-digit, override the broad ranges below) ---
+44625942: Lloyds Bank
+41654904: Revolut
+
+# --- Fintech / digital ---
+535522: Monzo
+448309: Revolut
+539962: Starling
+462994: Chase UK
+
+# --- Lloyds Banking Group ---
+4659: Lloyds Bank
+4008: Lloyds Bank
+4506: Lloyds Bank
+4658: Halifax
+5411: Halifax
+
+# --- NatWest Group ---
+4751: NatWest
+5301: NatWest
+5334: NatWest
+5487: RBS
+
+# --- Barclays ---
+4929: Barclays
+4543: Barclays
+5426: Barclays
+
+# --- HSBC ---
+# 4462 removed: it's a shared range (Lloyds cards like 44625942 use it too), so
+# it mislabeled a Lloyds card as HSBC. A genuine HSBC 4462 card now shows
+# "Bank: ?" — add its exact 8-digit BIN here if you want it named.
+4571: HSBC
+4048: HSBC
+
+# --- Santander ---
+5490: Santander
+5300: Santander
+4098: Santander
+
+# --- Others ---
+5560: Nationwide
+4893: Nationwide
+4913: TSB
+5044: Co-operative Bank
+4562: Virgin Money

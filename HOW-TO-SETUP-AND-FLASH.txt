@@ -1,0 +1,167 @@
+====================================================================
+ FLIPPER — CARDPUTER ADV (PUBLIC BUILD)
+ Web Flasher — Setup & Flashing Instructions
+====================================================================
+
+This folder is a complete, self-hostable web flasher. Anyone can host
+it and then flash the firmware straight from a web browser — no drivers,
+no Python, no command line.
+
+Files in this folder:
+  index.html                                the flash web page
+  manifest.json                             tells the flasher where/how to write the bin
+  Flipper-cardputer_adv-public-merged.bin   the firmware (app image, ESP32-S3)
+  sd_content/                               PUBLIC databases to copy onto a microSD card
+  HOW-TO-SETUP-AND-FLASH.txt                this file
+  README.md                                 same info in Markdown
+
+
+====================================================================
+ PART 1 — HOSTING IT (for the person sharing the firmware)
+====================================================================
+
+IMPORTANT: Web browsers only allow direct USB flashing over a SECURE
+connection (https:// or localhost). A plain http:// site will load the
+page but the "Install" button will not work. So you must host over HTTPS.
+
+Pick ONE of the options below.
+
+--------------------------------------------------------------------
+OPTION A — GitHub Pages (free, permanent link)
+--------------------------------------------------------------------
+  1. Create a GitHub account and a new repository (public).
+  2. Upload all files from THIS folder into the repository
+     (index.html, manifest.json, the .bin, sd_content/, and this .txt).
+       - Web upload: repo -> "Add file" -> "Upload files" -> drag them in
+                     -> "Commit changes".
+  3. In the repo: Settings -> Pages.
+  4. Under "Build and deployment", Source = "Deploy from a branch".
+     Branch = main, Folder = / (root). Click Save.
+  5. Wait ~1 minute. GitHub shows a URL like:
+       https://YOURNAME.github.io/YOURREPO/
+  6. Share that URL. That is your web flasher.
+
+--------------------------------------------------------------------
+OPTION B — Netlify Drop (fastest, drag-and-drop)
+--------------------------------------------------------------------
+  1. Go to  https://app.netlify.com/drop
+  2. Drag THIS ENTIRE FOLDER onto the page.
+  3. Netlify gives you an https:// link instantly. Share it.
+
+  (Cloudflare Pages and Vercel work the same way — any static host
+   that serves over HTTPS is fine.)
+
+--------------------------------------------------------------------
+OPTION C — Test on your own computer first (localhost)
+--------------------------------------------------------------------
+  localhost counts as "secure", so flashing works locally without HTTPS.
+  Requires Python installed.
+
+  1. Open a terminal / command prompt IN this folder.
+  2. Run:
+         python -m http.server 8000
+  3. Open  http://localhost:8000/  in Chrome or Edge.
+  4. Flash as described in Part 2. Press Ctrl+C in the terminal to stop.
+
+
+====================================================================
+ PART 2 — FLASHING THE DEVICE (for the end user)
+====================================================================
+
+YOU NEED:
+  - An M5Stack Cardputer ADV.
+  - A microSD card (FAT32) — REQUIRED for databases (see Part 3).
+  - A USB-C DATA cable (a charge-only cable will NOT work).
+  - A desktop computer running Google Chrome or Microsoft Edge.
+    (Firefox, Safari, and phones/tablets cannot flash — they lack
+     the Web Serial feature. Use the manual method in Part 4 instead.)
+
+STEPS:
+  1. Open the flasher web page (the https:// link, or http://localhost:8000/).
+  2. Plug the Cardputer into the computer with the USB-C data cable.
+  3. Click  "Connect & Install".
+  4. A browser popup lists serial ports. Select the device's port and
+     click Connect.
+  5. Choose  "Install"  and confirm the erase when asked.
+     (This wipes the chip and writes the new firmware — that's normal.)
+  6. Wait for it to reach 100%. Do not unplug during flashing.
+  7. When it finishes, press the RESET button on the device once.
+     The firmware boots.
+
+DONE — but do Part 3 so databases work.
+
+
+====================================================================
+ PART 3 — MICROSD CARD (REQUIRED FOR DATABASES)
+====================================================================
+
+The Cardputer ADV keeps its databases on a real microSD card, NOT on
+internal flash. Without the card (or without these files on it), SubGHz
+KeeLoq decoding, NFC dictionaries, and IR universal remotes won't work,
+and you may see "database not found" messages.
+
+  1. Format a microSD card as FAT32.
+  2. Copy the CONTENTS of the "sd_content/" folder to the ROOT of the card.
+     After copying, the card root should contain:
+         /subghz    /nfc    /infrared    /Manifest
+  3. Insert the card into the Cardputer and reboot.
+
+The sd_content/ folder contains PUBLIC databases only:
+  - subghz/assets/keeloq_mfcodes_user   (plaintext/community KeeLoq codes)
+  - subghz/assets/dangerous_settings
+  - nfc/assets/*                         (NFC dictionaries + lookups)
+  - infrared/assets/*                    (IR universal-remote databases)
+PRIVATE/proprietary encrypted keystores (keeloq_mfcodes, alutech_at_4n,
+nice_flor_s) are intentionally NOT included in this public build.
+
+
+====================================================================
+ PART 4 — TROUBLESHOOTING
+====================================================================
+
+No serial port appears in the popup, OR "Connect" fails:
+  The ESP32-S3 sometimes needs to be put into "download mode" by hand:
+    1. Hold the G0 button (on top of the Cardputer).
+    2. While holding G0, tap the RESET button once.
+    3. Release G0.
+    4. Click "Connect & Install" again and pick the port.
+    5. After flashing, press RESET once to boot.
+
+The Install button is greyed out / says unsupported:
+  You are not on Chrome or Edge, or the page is on http:// (not https://).
+  Use desktop Chrome/Edge and make sure the URL starts with https://
+  (or is http://localhost).
+
+Nothing happens when I plug in the device:
+  The cable is probably charge-only. Swap to a known USB-C DATA cable.
+
+"Database not found" / IR remotes empty / KeeLoq won't decode:
+  The microSD step (Part 3) was skipped or the files are in the wrong
+  place. The card root must contain /subghz, /nfc, /infrared, /Manifest.
+
+MANUAL FLASH (no supported browser) — using esptool:
+  1. Install Python, then run:
+         pip install esptool
+  2. Flash (replace COMx with your port, e.g. COM12):
+         esptool --chip esp32s3 --port COMx --baud 921600 write_flash 0x0 Flipper-cardputer_adv-public-merged.bin
+     macOS/Linux port looks like /dev/tty.usbmodem... or /dev/ttyACM0
+  Flash mode/size/frequency are already baked into the image, so no
+  extra flags are needed. Still do the microSD step (Part 3).
+
+
+====================================================================
+ NOTES
+====================================================================
+  - The .bin is a MERGED image written at offset 0x0 (bootloader +
+    partition table + application). Databases live on the microSD card,
+    NOT inside the image.
+  - This is the PUBLIC build: the in-tree ProtoPirate car-key SubGHz
+    decoders and the CAN Commander (OBD/CAN) app are removed. The
+    Defender RF attack detector and everything else stay. The community
+    standalone ProtoPirate app is included.
+  - Re-flashing / choosing "Install" ERASES the chip (firmware only).
+    Your microSD card is untouched.
+  - To publish an updated firmware later: replace the .bin with the new
+    one (keep the exact same filename) and bump "version" in manifest.json.
+  - Chip: ESP32-S3.  Build variant: PUBLIC.
+====================================================================
