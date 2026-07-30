@@ -210,7 +210,7 @@
       <p class="sub">16 files, all public data — SubGHz KeeLoq (gate/garage) keys, NFC dictionaries, and IR universal‑remote databases. No card (or missing files) means SubGHz decoding, NFC lookups, and IR remotes won’t work. Re‑flashing the firmware does not touch the card.</p>
     </div>
 
-    <p class="footer">Flipper Cardputer ADV · public build · latest: <span id="lastbuild">…</span></p>
+    <p class="footer">Flipper Cardputer ADV · public build · latest: <span id="lastbuild">…</span> · <span id="flash-count">…</span> flashes &amp; downloads</p>
   </div>
 
   <script>
@@ -232,6 +232,23 @@
       } catch (e) {
         if (el) el.textContent = 'latest';
       }
+    })();
+
+    // Shared flash/download counter (KV-backed, via the applab Worker). Best-effort.
+    const COUNTER_URL = 'https://applab-build-proxy.stonervpn.workers.dev/count';
+    (async () => {
+      const c = document.getElementById('flash-count');
+      if (!c) return;
+      try {
+        const j = await (await fetch(COUNTER_URL, { cache: 'no-store' })).json();
+        c.textContent = (typeof j.count === 'number') ? j.count.toLocaleString() : '—';
+      } catch (e) { c.textContent = '—'; }
+    })();
+    (function () {
+      const b = document.querySelector('esp-web-install-button button[slot="activate"]');
+      if (b) b.addEventListener('click', () => {
+        try { fetch(COUNTER_URL, { method: 'POST', mode: 'cors', keepalive: true }); } catch (e) {}
+      });
     })();
   </script>
 </body>
