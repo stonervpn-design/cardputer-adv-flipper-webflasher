@@ -1,6 +1,6 @@
 {
   "name": "Flipper Cardputer ADV (Public)",
-  "version": "cardputer-2026-08-06a",
+  "version": "public-2026-08-07a",
   "new_install_prompt_erase": true,
   "builds": [
     {
